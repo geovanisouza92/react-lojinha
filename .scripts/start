@@ -1,0 +1,3 @@
+#!/bin/sh
+
+concurrently -p name -c bgGreen.bold,bgBlue.bold -n api,web "npm run start:api" "npm run start:dev"
