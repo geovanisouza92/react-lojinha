@@ -1,5 +1,6 @@
 import React, { Component } from 'react'
 import ProductList from './ProductList'
+import ProductForm from './ProductForm'
 import Cart from './Cart'
 import './App.css'
 
@@ -12,7 +13,9 @@ class App extends Component {
     }
     this.addToCart = this.addToCart.bind(this)
     this.removeFromCart = this.removeFromCart.bind(this)
-    // TODO: Faça o bind dos métodos editProduct e updateProduct
+    this.editProduct = this.editProduct.bind(this)
+    this.updateProduct = this.updateProduct.bind(this)
+    // TODO: Faça o bind do método checkout
   }
 
   componentWillMount () {
@@ -33,26 +36,40 @@ class App extends Component {
   }
 
   editProduct (product) {
-    // TODO: Defina o atributo editingProduct do state
-    // com o produto recebido
+    this.setState({
+      editingProduct: product
+    })
   }
 
   updateProduct (product) {
-    // TODO:
-    //
-    // 1) Execute uma requisição HTTP PATCH usando
-    // a API fetch do navegador¹ (use o segundo argumento)
-    // para definir o método, cabeçalhos e body da requisição,
-    // capture o retorno
-    //
-    // 2) Com o valor recebido, defina o atributo editingProduct
-    // como nulo e o atributo products do state com uma
-    // *nova lista* de produtos, substituindo o produto que
-    // estava sendo editado pelo valor recebido da requisição
-    // de update
-    //
-    // Referências:
-    // ¹ https://developer.mozilla.org/en-US/docs/Web/API/GlobalFetch/fetch
+    fetch(`http://localhost:3001/products/${product.id}/`, {
+        method: 'PATCH',
+        headers: {
+          'Accept': 'application/json',
+          'Content-Type': 'application/json'
+        },
+        body: JSON.stringify(product)
+      })
+      .then(res => res.json())
+      .then(updated => {
+        const i = this.state.products
+          .findIndex(p => p.id === updated.id)
+        const len = this.state.products.length
+        const products = this.state.products
+          .slice(0, i)
+          .concat(updated)
+          .concat(this.state.products
+            .slice(i+1, len))
+        this.setState({
+          editingProduct: null,
+          products
+        })
+      })
+  }
+
+  checkout () {
+    // TODO: Crie um pedido a partir dos itens do carrinho, e quando
+    // o pedido for criado, remova os itens do carrinho
   }
 
   render () {
@@ -60,6 +77,8 @@ class App extends Component {
     const cart = this.state.cart
     const editingProduct = this.state.editingProduct
 
+    // TODO: Passe a referência do método checkout para o carrinho
+    // via props
     let main = (
       <div className='row'>
         <div className='col-md-8 col-sm-8'>
@@ -81,10 +100,12 @@ class App extends Component {
       </div>
     )
 
-    // TODO: Substitua a variável main pelo ProductForm
-    // quando houver um produto a ser editado
     if (editingProduct) {
-      // Código
+      main = (
+        <ProductForm
+          product={editingProduct}
+          onUpdateProduct={this.updateProduct} />
+      )
     }
 
     return (

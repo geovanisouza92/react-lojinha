@@ -27,6 +27,7 @@ const Cart = React.createClass({
     const total = Math.round(this.props.cart
       .reduce((subtotal, product) => subtotal + product.price, 0) * 100) / 100
 
+    // TODO: Crie um botão para realizar o checkout
     return (
       <div className='panel panel-default'>
         <div className='panel-body'>
