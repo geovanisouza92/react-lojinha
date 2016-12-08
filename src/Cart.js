@@ -14,6 +14,11 @@ const Cart = React.createClass({
                 </span>
                 <div className='pull-right'>
                   <span className='label label-default'>{product.price}</span>
+                  <button
+                    className='btn btn-xs btn-default'
+                    onClick={() => this.props.onRemoveFromCart(product)}>
+                    <span className='glyphicon glyphicon-remove' />
+                  </button>
                 </div>
               </li>
             )

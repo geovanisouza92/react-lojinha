@@ -11,7 +11,8 @@ class App extends Component {
       cart: []
     }
     this.addToCart = this.addToCart.bind(this)
-    // TODO: Faça o bind do método removeFromCart
+    this.removeFromCart = this.removeFromCart.bind(this)
+    // TODO: Faça o bind dos métodos editProduct e updateProduct
   }
 
   componentWillMount () {
@@ -26,15 +27,39 @@ class App extends Component {
   }
 
   removeFromCart (product) {
-    // TODO: Remova o produto do carrinho (criando uma nova lista)
+    const cart = this.state.cart
+      .filter(p => p.id !== product.id)
+    this.setState({cart})
+  }
+
+  editProduct (product) {
+    // TODO: Defina o atributo editingProduct do state
+    // com o produto recebido
+  }
+
+  updateProduct (product) {
+    // TODO:
+    //
+    // 1) Execute uma requisição HTTP PATCH usando
+    // a API fetch do navegador¹ (use o segundo argumento)
+    // para definir o método, cabeçalhos e body da requisição,
+    // capture o retorno
+    //
+    // 2) Com o valor recebido, defina o atributo editingProduct
+    // como nulo e o atributo products do state com uma
+    // *nova lista* de produtos, substituindo o produto que
+    // estava sendo editado pelo valor recebido da requisição
+    // de update
+    //
+    // Referências:
+    // ¹ https://developer.mozilla.org/en-US/docs/Web/API/GlobalFetch/fetch
   }
 
   render () {
     const products = this.state.products
     const cart = this.state.cart
+    const editingProduct = this.state.editingProduct
 
-    // TODO: Passe a referência do método removeFromCart via props
-    // para o carrinho
     let main = (
       <div className='row'>
         <div className='col-md-8 col-sm-8'>
@@ -49,10 +74,18 @@ class App extends Component {
         <div className='col-md-4 col-sm-4'>
           <h3>Carrinho</h3>
 
-          <Cart cart={cart} />
+          <Cart
+            cart={cart}
+            onRemoveFromCart={this.removeFromCart} />
         </div>
       </div>
     )
+
+    // TODO: Substitua a variável main pelo ProductForm
+    // quando houver um produto a ser editado
+    if (editingProduct) {
+      // Código
+    }
 
     return (
       <div className='container'>
