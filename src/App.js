@@ -15,7 +15,7 @@ class App extends Component {
     this.removeFromCart = this.removeFromCart.bind(this)
     this.editProduct = this.editProduct.bind(this)
     this.updateProduct = this.updateProduct.bind(this)
-    // TODO: Faça o bind do método checkout
+    this.checkout = this.checkout.bind(this)
   }
 
   componentWillMount () {
@@ -68,8 +68,33 @@ class App extends Component {
   }
 
   checkout () {
-    // TODO: Crie um pedido a partir dos itens do carrinho, e quando
-    // o pedido for criado, remova os itens do carrinho
+    const itens = this.state.cart
+      .reduce((itens, item) => {
+        const found = itens.find(i => i.id === item.id)
+
+        if (found) {
+          found.quantity += 1
+        } else {
+          itens.push({id: item.id, quantity: 1})
+        }
+
+        return itens
+      }, [])
+
+    const order = {itens}
+
+    fetch('http://localhost:3001/orders', {
+        method: 'POST',
+        headers: {
+          'Accept': 'application/json',
+          'Content-Type': 'application/json'
+        },
+        body: JSON.stringify(order)
+      })
+      .then(res => res.json())
+      .then(order => {
+        this.setState({cart: []})
+      })
   }
 
   render () {
@@ -77,8 +102,6 @@ class App extends Component {
     const cart = this.state.cart
     const editingProduct = this.state.editingProduct
 
-    // TODO: Passe a referência do método checkout para o carrinho
-    // via props
     let main = (
       <div className='row'>
         <div className='col-md-8 col-sm-8'>
@@ -95,6 +118,7 @@ class App extends Component {
 
           <Cart
             cart={cart}
+            onCheckout={this.checkout}
             onRemoveFromCart={this.removeFromCart} />
         </div>
       </div>

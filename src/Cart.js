@@ -34,6 +34,11 @@ const Cart = React.createClass({
           {items}
           <hr />
           <div>Total: <span className='pull-right'>{total}</span></div>
+          <button
+            className='btn btn-primary'
+            onClick={this.props.onCheckout}>
+            Finalizar
+          </button>
         </div>
       </div>
     )
