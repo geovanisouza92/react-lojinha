@@ -1,5 +1,5 @@
 import React from 'react'
-import './Cart.css'
+import './styles.css'
 
 const Cart = React.createClass({
   render () {

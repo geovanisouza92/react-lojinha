@@ -1,8 +1,8 @@
 import React, { Component } from 'react'
-import ProductList from './ProductList'
-import ProductForm from './ProductForm'
-import Cart from './Cart'
-import './App.css'
+import ProductList from '../../components/ProductList'
+import ProductForm from '../../components/ProductForm'
+import Cart from '../../components/Cart'
+import './styles.css'
 
 class App extends Component {
   constructor (props) {
