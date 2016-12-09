@@ -1,32 +1,30 @@
-import {PRODUCTS_LOADED, PRODUCT_UPDATED} from '../constants'
+import {LOAD_PRODUCTS, UPDATE_PRODUCT} from '../constants'
 
 export function loadProducts () {
-  return function (dispatch, getState) {
-    fetch('http://localhost:3001/products')
-      .then(res => res.json())
-      .then(products =>
-        dispatch({
-          type: PRODUCTS_LOADED,
-          products
-        })
-      )
+  return {
+    type: LOAD_PRODUCTS,
+    payload: {
+      promise: fetch('http://localhost:3001/products')
+        .then(res => res.json())
+    }
   }
 }
 
 export function updateProduct (product) {
-  return function (dispatch) {
-    fetch(`http://localhost:3001/products/${product.id}/`, {
-      method: 'PATCH',
-      headers: {
-        'Accept': 'application/json',
-        'Content-Type': 'application/json'
-      },
-      body: JSON.stringify(product)
-    })
-    .then(res => res.json())
-    .then(updated => dispatch({
-      type: PRODUCT_UPDATED,
-      product
-    }))
+  const params = {
+    method: 'PATCH',
+    headers: {
+      'Accept': 'application/json',
+      'Content-Type': 'application/json'
+    },
+    body: JSON.stringify(product)
+  }
+
+  return {
+    type: UPDATE_PRODUCT,
+    payload: {
+      promise: fetch(`http://localhost:3001/products/${product.id}/`, params)
+        .then(res => res.json())
+    }
   }
 }

@@ -36,7 +36,7 @@ const Cart = React.createClass({
           <div>Total: <span className='pull-right'>{total}</span></div>
           <button
             className='btn btn-primary'
-            onClick={this.props.onCheckout}>
+            onClick={() => this.props.onCheckout(this.props.cart)}>
             Finalizar
           </button>
         </div>

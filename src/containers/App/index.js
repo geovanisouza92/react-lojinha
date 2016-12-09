@@ -1,8 +1,6 @@
 import React, { Component } from 'react'
 import {connect} from 'react-redux'
-import {addToCart, removeFromCart, checkout} from '../../store/actions/cart'
-import {editProduct} from '../../store/actions/editingProduct'
-import {updateProduct} from '../../store/actions/products'
+import {createActions} from '../../store/actions'
 import ProductList from '../../components/ProductList'
 import ProductForm from '../../components/ProductForm'
 import Cart from '../../components/Cart'
@@ -59,24 +57,7 @@ class App extends Component {
   }
 }
 
-function mapStateToProps (state, ownProps) {
-  return {
-    ...ownProps,
-    ...state
-  }
-}
-
-function mapDispatchToProps (dispatch, ownProps) {
-  return {
-    addToCart: (product) => dispatch(addToCart(product)),
-    removeFromCart: (product) => dispatch(removeFromCart(product)),
-    editProduct: (product) => dispatch(editProduct(product)),
-    updateProduct: (product) => dispatch(updateProduct(product)),
-    checkout: () => dispatch(checkout())
-  }
-}
-
 export default connect(
-  mapStateToProps,
-  mapDispatchToProps
+  state => state,
+  createActions
 )(App)

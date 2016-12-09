@@ -3,10 +3,10 @@ import cart from './cart'
 import editingProduct from './editingProduct'
 import products from './products'
 
-const reducer = combineReducers({
+const rootReducer = combineReducers({
   cart,
   editingProduct,
   products
 })
 
-export default reducer
+export default rootReducer

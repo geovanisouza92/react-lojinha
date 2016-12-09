@@ -1,13 +1,12 @@
 import {createStore, applyMiddleware} from 'redux'
+import promise from 'redux-promise-middleware'
 import thunk from 'redux-thunk'
-import createLogger from 'redux-logger'
 import {composeWithDevTools} from 'redux-devtools-extension'
-import reducer from './reducer'
+import rootReducer from './reducers'
 
-const finalCreateStore = composeWithDevTools(
-  applyMiddleware(thunk, createLogger())
-)(createStore)
-
-const store = finalCreateStore(reducer)
+const middlewares = applyMiddleware(promise(), thunk)
+const enhance = composeWithDevTools(middlewares)
+const enhancedCreateStore = enhance(createStore)
+const store = enhancedCreateStore(rootReducer)
 
 export default store
