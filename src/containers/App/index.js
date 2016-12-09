@@ -7,10 +7,14 @@ import './styles.css'
 class App extends Component {
   constructor (props) {
     super(props)
+    // TODO: State deixa de ser usado, para dar lugar aos
+    // props vinculados ao connect
     this.state = {
       products: [],
       cart: []
     }
+    // TODO: Handlers locais deixam de ser usados, dando lugar
+    // àos dispatchers (props) vinculados ao connect
     this.addToCart = this.addToCart.bind(this)
     this.removeFromCart = this.removeFromCart.bind(this)
     this.editProduct = this.editProduct.bind(this)
@@ -18,6 +22,9 @@ class App extends Component {
     this.checkout = this.checkout.bind(this)
   }
 
+  // TODO: Remover código de inicialização do componente
+  // (a store é autosuficiente, iniciada separamente do
+  // componente)
   componentWillMount () {
     fetch('http://localhost:3001/products')
       .then(res => res.json())
@@ -98,9 +105,12 @@ class App extends Component {
   }
 
   render () {
+    // TODO: this.state -> this.props
     const products = this.state.products
     const cart = this.state.cart
     const editingProduct = this.state.editingProduct
+
+    // TODO: this.método -> this.props.método
 
     let main = (
       <div className='row'>
@@ -145,4 +155,9 @@ class App extends Component {
   }
 }
 
+// TODO: Criar função para mapear state para props do container
+
+// TODO: Criar função para mapear dispatchers do container
+
+// TODO: Usar o utilitário connect para decorar o componente App
 export default App
