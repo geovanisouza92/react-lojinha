@@ -1,114 +1,18 @@
 import React, { Component } from 'react'
+import {connect} from 'react-redux'
+import {addToCart, removeFromCart, checkout} from '../../store/actions/cart'
+import {editProduct} from '../../store/actions/editingProduct'
+import {updateProduct} from '../../store/actions/products'
 import ProductList from '../../components/ProductList'
 import ProductForm from '../../components/ProductForm'
 import Cart from '../../components/Cart'
 import './styles.css'
 
 class App extends Component {
-  constructor (props) {
-    super(props)
-    // TODO: State deixa de ser usado, para dar lugar aos
-    // props vinculados ao connect
-    this.state = {
-      products: [],
-      cart: []
-    }
-    // TODO: Handlers locais deixam de ser usados, dando lugar
-    // àos dispatchers (props) vinculados ao connect
-    this.addToCart = this.addToCart.bind(this)
-    this.removeFromCart = this.removeFromCart.bind(this)
-    this.editProduct = this.editProduct.bind(this)
-    this.updateProduct = this.updateProduct.bind(this)
-    this.checkout = this.checkout.bind(this)
-  }
-
-  // TODO: Remover código de inicialização do componente
-  // (a store é autosuficiente, iniciada separamente do
-  // componente)
-  componentWillMount () {
-    fetch('http://localhost:3001/products')
-      .then(res => res.json())
-      .then(products => this.setState({products}))
-  }
-
-  addToCart (product) {
-    const cart = [...this.state.cart, product]
-    this.setState({cart})
-  }
-
-  removeFromCart (product) {
-    const cart = this.state.cart
-      .filter(p => p.id !== product.id)
-    this.setState({cart})
-  }
-
-  editProduct (product) {
-    this.setState({
-      editingProduct: product
-    })
-  }
-
-  updateProduct (product) {
-    fetch(`http://localhost:3001/products/${product.id}/`, {
-        method: 'PATCH',
-        headers: {
-          'Accept': 'application/json',
-          'Content-Type': 'application/json'
-        },
-        body: JSON.stringify(product)
-      })
-      .then(res => res.json())
-      .then(updated => {
-        const i = this.state.products
-          .findIndex(p => p.id === updated.id)
-        const len = this.state.products.length
-        const products = this.state.products
-          .slice(0, i)
-          .concat(updated)
-          .concat(this.state.products
-            .slice(i+1, len))
-        this.setState({
-          editingProduct: null,
-          products
-        })
-      })
-  }
-
-  checkout () {
-    const itens = this.state.cart
-      .reduce((itens, item) => {
-        const found = itens.find(i => i.id === item.id)
-
-        if (found) {
-          found.quantity += 1
-        } else {
-          itens.push({id: item.id, quantity: 1})
-        }
-
-        return itens
-      }, [])
-
-    const order = {itens}
-
-    fetch('http://localhost:3001/orders', {
-        method: 'POST',
-        headers: {
-          'Accept': 'application/json',
-          'Content-Type': 'application/json'
-        },
-        body: JSON.stringify(order)
-      })
-      .then(res => res.json())
-      .then(order => {
-        this.setState({cart: []})
-      })
-  }
-
   render () {
-    // TODO: this.state -> this.props
-    const products = this.state.products
-    const cart = this.state.cart
-    const editingProduct = this.state.editingProduct
+    const products = this.props.products
+    const cart = this.props.cart
+    const editingProduct = this.props.editingProduct
 
     // TODO: this.método -> this.props.método
 
@@ -119,8 +23,8 @@ class App extends Component {
 
           <ProductList
             products={products}
-            onAddToCart={this.addToCart}
-            onEditProduct={this.editProduct} />
+            onAddToCart={this.props.addToCart}
+            onEditProduct={this.props.editProduct} />
 
         </div>
         <div className='col-md-4 col-sm-4'>
@@ -128,8 +32,8 @@ class App extends Component {
 
           <Cart
             cart={cart}
-            onCheckout={this.checkout}
-            onRemoveFromCart={this.removeFromCart} />
+            onCheckout={this.props.checkout}
+            onRemoveFromCart={this.props.removeFromCart} />
         </div>
       </div>
     )
@@ -138,7 +42,7 @@ class App extends Component {
       main = (
         <ProductForm
           product={editingProduct}
-          onUpdateProduct={this.updateProduct} />
+          onUpdateProduct={this.props.updateProduct} />
       )
     }
 
@@ -155,9 +59,24 @@ class App extends Component {
   }
 }
 
-// TODO: Criar função para mapear state para props do container
+function mapStateToProps (state, ownProps) {
+  return {
+    ...ownProps,
+    ...state
+  }
+}
 
-// TODO: Criar função para mapear dispatchers do container
+function mapDispatchToProps (dispatch, ownProps) {
+  return {
+    addToCart: (product) => dispatch(addToCart(product)),
+    removeFromCart: (product) => dispatch(removeFromCart(product)),
+    editProduct: (product) => dispatch(editProduct(product)),
+    updateProduct: (product) => dispatch(updateProduct(product)),
+    checkout: () => dispatch(checkout())
+  }
+}
 
-// TODO: Usar o utilitário connect para decorar o componente App
-export default App
+export default connect(
+  mapStateToProps,
+  mapDispatchToProps
+)(App)
